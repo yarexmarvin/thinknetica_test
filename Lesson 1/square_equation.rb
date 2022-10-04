@@ -12,17 +12,17 @@ discriminant = (num2**2 - 4*num1*num3)
 
 if discriminant < 0
 
-  puts "уравнение не имеет решений"
+  puts "дискриминант = #{discriminant} уравнение не имеет решений"
 
 elsif discriminant == 0
 
   result = -num2 / (2*num1)
-  puts "ответ: #{result}"
+  puts "дискриминант = #{discriminant}, корень: #{result}"
 
 else
   result1 = (-num2 + Math.sqrt(discriminant))/(2*num1)
   result2 = (-num2 - Math.sqrt(discriminant))/(2*num1)
   
-  puts "ответы: х1=#{result1} х2=#{result2}"
+  puts "дискриминант = #{discriminant}, корень 1 = #{result1}, корень 2= #{result2}"
 
 end
