@@ -62,8 +62,6 @@ class Route
     result = @stations.collect {|station| station}
     result.unshift(@start)
     result.push(@end)
-    puts @stations.inspect
-    puts result.inspect
     return result
   end
 
@@ -151,7 +149,6 @@ class Train
 
   end
 
-   
 end
 
 
@@ -171,6 +168,8 @@ route1.add_station(station3)
 route1.add_station(station4)
 route1.remove_station(station3)
 route1.add_station(station5)
+
+puts " Route 1 consist of: #{route1.get_route.inspect} "
 
 
 train1 = Train.new('train1', 'transport', 3 );
