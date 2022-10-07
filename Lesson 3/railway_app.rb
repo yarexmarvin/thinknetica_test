@@ -2,13 +2,11 @@
 
 class Station
 
+  attr_reader :name
+
   def initialize(name)
     @name = name  
     @trains = []
-  end
-
-  def name
-    @name
   end
 
   def trains
@@ -50,24 +48,30 @@ class Route
     @stations = []
   end
 
-  def add_station station_name
+  def add_station(station_name)
     @stations << station_name
   end
 
-  def remove_station target_station
-    @stations = @stations.select {|station| station != target_station }
+  def remove_station(target_station)
+    index = @stations.index(target_station)
+    @stations.slice!(index)
+    puts "Stations left #{@stations}"
   end
 
   def get_route
-    result = @stations
+    result = @stations.collect {|station| station}
     result.unshift(@start)
     result.push(@end)
+    puts @stations.inspect
+    puts result.inspect
     return result
   end
 
 end
 
 class Train 
+
+  attr_reader :station, :number, :carriages, :speed, :type
 
   def initialize(number, type, carriages=0 )
     @number = number
@@ -76,18 +80,6 @@ class Train
     @speed = 0
     @station = {}
     @route = {}
-  end
-
-  def number
-    @number
-  end
-  
-  def type
-    @type
-  end
-
-  def carriages
-    @carriages
   end
 
   def add_carriage
@@ -107,9 +99,7 @@ class Train
     end
   end
 
-  def speed
-    @speed
-  end
+
 
   def speed=(speed)
     @speed = speed
@@ -121,7 +111,7 @@ class Train
     puts "The train has just stopped"
   end
 
-  def add_route route
+  def add_route(route)
     @route = route
     @station = route[0]
     @station.add_train(self)
@@ -161,11 +151,7 @@ class Train
 
   end
 
-    def station
-      @station
-    end
-
-
+   
 end
 
 
@@ -212,3 +198,6 @@ train1.to_next_station
 train1.to_next_station
 train1.to_next_station
 train1.to_next_station
+
+
+
