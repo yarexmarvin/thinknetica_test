@@ -1,4 +1,4 @@
-require_relative '../route.rb'
+require_relative "../route.rb"
 require_relative "../modules/options_module.rb"
 
 class RouteController
@@ -40,38 +40,53 @@ class RouteController
     name = ask_user
     return if name == EXIT_PROGRAM
 
-    puts "=========================="
-    puts "Choose start point"
-    @stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
-    puts "=========================="
-    start_station_number = ask_user
-    return if start_station_number == EXIT_PROGRAM
-    start_station = @stations[start_station_number.to_i - 1]
+    loop do
 
-    puts "=========================="
-    puts "Choose end point"
-    end_stations = @stations.select { |station| station != start_station }
-    end_stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
-    puts "=========================="
-    end_station_number = ask_user
-    return if end_station_number == EXIT_PROGRAM
-    end_station = end_stations[end_station_number.to_i - 1]
+      puts "=========================="
+      puts "Choose start point"
+      @stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
+      puts "=========================="
+      start_station_number = ask_user
+      return if start_station_number == EXIT_PROGRAM
 
-    puts "=========================="
-    puts "If you wish to add stations in between, just enter the numbers in a row with a comma"
-    puts "=========================="
-    in_between_stations = @stations.select { |station| station != start_station && station != end_station }
-    in_between_stations.each_with_index { |station, index| puts " #{index + 1} - Station: #{station.name}" }
+      start_station = @stations[start_station_number.to_i - 1]
 
-    in_between_stations_numbers = ask_user.to_s
-    return if in_between_stations_numbers == EXIT_PROGRAM
+      puts "=========================="
+      puts "Choose end point"
+      end_stations = @stations.select { |station| station != start_station }
+      end_stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
+      puts "=========================="
+      end_station_number = ask_user
+      return if end_station_number == EXIT_PROGRAM
+      if (!end_station_number.to_i.positive? || end_station_number.to_i > end_stations.length)
+        print_wrong_option
+        next
+      else
+        end_station = end_stations[end_station_number.to_i - 1]
+      end
 
-    stations_in_between = in_between_stations_numbers.split(",").map { |index| in_between_stations[index.to_i - 1] }
+      puts "=========================="
+      puts "If you wish to add stations in between, just enter the numbers in a row with a comma"
+      puts "=========================="
+      in_between_stations = @stations.select { |station| station != start_station && station != end_station }
+      in_between_stations.each_with_index { |station, index| puts " #{index + 1} - Station: #{station.name}" }
 
-    @routes << Route.new(name, start_station, end_station, stations_in_between)
-    puts "============================="
-    puts "A new route has been created!"
-    puts "============================="
+      in_between_stations_numbers = ask_user.to_s
+      return if in_between_stations_numbers == EXIT_PROGRAM
+
+      if (!in_between_stations_numbers.to_i.positive? || in_between_stations_numbers.to_i > in_between_stations.length)
+        print_wrong_option
+        next
+      else
+        stations_in_between = in_between_stations_numbers.split(",").map { |index| in_between_stations[index.to_i - 1] }
+      end
+
+      @routes << Route.new(name, start_station, end_station, stations_in_between)
+      puts "============================="
+      puts "A new route has been created!"
+      puts "============================="
+      break
+    end
   end
 
   def routes_list_action
