@@ -1,3 +1,4 @@
+require_relative '../station.rb'
 require_relative "../modules/options_module.rb"
 
 class StationController

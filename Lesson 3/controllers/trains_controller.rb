@@ -13,7 +13,6 @@ class TrainController
   end
 
   private
-
   def train_controller
     loop do
       show_options("Choose an action", ["Create a train", "Update a train", "Move a train"])
