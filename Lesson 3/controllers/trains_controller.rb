@@ -13,6 +13,7 @@ class TrainController
   end
 
   private
+
   def train_controller
     loop do
       show_options("Choose an action", ["Create a train", "Update a train", "Move a train"])
@@ -51,18 +52,14 @@ class TrainController
     when "2"
       return @trains << CargoTrain.new(name, "cargo")
     else
-      puts "=========================="
-      puts "Wrong type, try again"
-      puts "=========================="
+      print_wrong_option
       return
     end
   end
 
   def move_train_action
     if (@trains.size.zero?)
-      puts "=========================="
-      puts "there is no train to move"
-      puts "=========================="
+      show_no_subject("train to move")
       return
     end
 
@@ -78,9 +75,7 @@ class TrainController
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @trains.size)
         break if user_answer == EXIT_PROGRAM
-        puts "=========================="
-        puts "Wrong number, try again"
-        puts "=========================="
+        print_wrong_option
         next
       end
 
@@ -92,9 +87,7 @@ class TrainController
 
   def move_train(train)
     if (train.route.size.zero?)
-      puts "=========================="
-      puts "There is no route"
-      puts "=========================="
+      show_no_subject("no route")
       return
     end
     loop do
@@ -167,7 +160,7 @@ class TrainController
 
   def add_carriage_to_train(train)
     if (@carriages.size.zero?)
-      show_no_subject('carriages')
+      show_no_subject("carriages")
       return
     end
 
@@ -193,7 +186,7 @@ class TrainController
 
   def remove_carriage_from_train(train)
     if (train.carriages.size.zero?)
-      show_no_subject('carriages')
+      show_no_subject("carriages")
       return
     else
       train.remove_carriage
@@ -203,7 +196,7 @@ class TrainController
 
   def set_route_to_train(train)
     if (@routes.size.zero?)
-      show_no_subject('routes')
+      show_no_subject("routes")
       return
     end
     puts "List of routes:"
