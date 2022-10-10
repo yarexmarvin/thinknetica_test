@@ -1,8 +1,9 @@
-require "./carriages/passengerCarriage.rb"
-require "./carriages/cargoCarriage.rb"
+require_relative "../modules/options_module.rb"
+require "./carriages/passenger_carriage.rb"
+require "./carriages/cargo_carriage.rb"
 
 class CarriageController
-  EXIT_PROGRAM = "back"
+  include Options
 
   def initialize(carriages)
     @carriages = carriages
@@ -10,14 +11,11 @@ class CarriageController
   end
 
   private
+
   def carriage_controller
     loop do
-      puts "Choose an action:"
-      puts "1 - create a carriage"
-      puts "2 - show the list of carriages"
-      puts "Enter 'back' to move back"
-
-      user_answer = gets.chomp
+      show_options("Choose an action:", ["Create a carriage", "Show the list of carriages"])
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -26,7 +24,7 @@ class CarriageController
       when "2"
         carriages_list_action
       else
-        puts "Undefined"
+        print_wrong_option
       end
     end
   end
@@ -35,32 +33,29 @@ class CarriageController
     puts "=========================="
     puts "Enter the name of a carriage:"
     puts "=========================="
-    name = gets.chomp
-    puts "=========================="
-    puts "Enter the type of a carriage (passenger/cargo)"
-    puts "1 - Passenger"
-    puts "2 - Cargo"
-    puts "=========================="
-    type = gets.chomp
+    name = ask_user
+    show_options("Enter the type of a carriage", ["Passenger", "Cargo"])
+    type = ask_user
 
     case type
     when "1"
-      return @carriages << PassengerCarriage.new(name, "passenger")
+      @carriages << PassengerCarriage.new(name, "passenger")
     when "2"
-      return @carriages << CargoCarriage.new(name, "cargo")
+      @carriages << CargoCarriage.new(name, "cargo")
     else
-      puts "=========================="
-      puts "Wrong type, try again"
-      puts "=========================="
+      print_wrong_option
       return
     end
+
+    puts "================================"
+    puts "A new carriage has been create!"
+    puts "================================"
+    return
   end
 
   def carriages_list_action
     if (@carriages.size.zero?)
-      puts "=========================="
-      puts "There are no carriages"
-      puts "=========================="
+      show_no_subject("carriages")
       return
     end
     puts "=========================="
@@ -69,5 +64,4 @@ class CarriageController
     puts "=========================="
     return
   end
-
 end

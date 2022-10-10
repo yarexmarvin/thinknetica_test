@@ -1,5 +1,7 @@
+require_relative "../modules/options_module.rb"
+
 class RouteController
-  EXIT_PROGRAM = "back"
+  include Options
 
   def initialize(routes, stations)
     @routes = routes
@@ -8,14 +10,12 @@ class RouteController
   end
 
   private
+
   def route_controller
     loop do
-      puts "Choose an action:"
-      puts "1 - create a route"
-      puts "2 - get a list routes"
-      puts "Enter 'back' to move back"
+      show_options("Choose an action", ["Create a route", "Get a list routes"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -24,29 +24,26 @@ class RouteController
       when "2"
         routes_list_action
       else
-        puts "Undefined"
+        print_wrong_option
       end
     end
   end
 
   def create_route_action
-
     if (@stations.size < 2)
-      puts "================================"
-      puts "There is not enough stations to create a route"
-      puts "================================"
+      show_no_subject("stations to create a route")
       return
     end
 
     puts "Enter the name of a new route"
-    name = gets.chomp
+    name = ask_user
     return if name == EXIT_PROGRAM
 
     puts "=========================="
     puts "Choose start point"
     @stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
     puts "=========================="
-    start_station_number = gets.chomp
+    start_station_number = ask_user
     return if start_station_number == EXIT_PROGRAM
     start_station = @stations[start_station_number.to_i - 1]
 
@@ -55,7 +52,7 @@ class RouteController
     end_stations = @stations.select { |station| station != start_station }
     end_stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
     puts "=========================="
-    end_station_number = gets.chomp
+    end_station_number = ask_user
     return if end_station_number == EXIT_PROGRAM
     end_station = end_stations[end_station_number.to_i - 1]
 
@@ -65,10 +62,10 @@ class RouteController
     in_between_stations = @stations.select { |station| station != start_station && station != end_station }
     in_between_stations.each_with_index { |station, index| puts " #{index + 1} - Station: #{station.name}" }
 
-    in_between_stations_numbers = gets.chomp.to_s
+    in_between_stations_numbers = ask_user.to_s
     return if in_between_stations_numbers == EXIT_PROGRAM
 
-    stations_in_between = in_between_stations_numbers.split(",").map { |index| in_between_stations[index.to_i - 1]}
+    stations_in_between = in_between_stations_numbers.split(",").map { |index| in_between_stations[index.to_i - 1] }
 
     @routes << Route.new(name, start_station, end_station, stations_in_between)
     puts "============================="
@@ -78,9 +75,7 @@ class RouteController
 
   def routes_list_action
     if @routes.size.zero?
-      puts "====================="
-      puts "There are no routes!"
-      puts "====================="
+      show_no_subject("routes")
       return
     end
 
@@ -90,14 +85,12 @@ class RouteController
       @routes.each_with_index { |routes, index| puts "Route #{index + 1} - #{routes.name}" }
       puts "==================="
       puts "Enter a number of a route, if you want to explore more (or type 'back' to move back): "
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @routes.size)
-        puts "======================="
-        puts "Wrong number, try again"
-        puts "======================="
+        print_wrong_option
         next
       end
 
@@ -108,13 +101,9 @@ class RouteController
 
   def route_action(route)
     loop do
-      puts "Choose an action for this route:"
-      puts "1 - show route"
-      puts "2 - add stations"
-      puts "3 - delete stations"
-      puts "Enter 'back' to move back"
+      show_options("Choose an action for this route", ["Show the route", "Add stations", "Delete stations"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -126,7 +115,7 @@ class RouteController
       when "3"
         delete_station_from_route(route)
       else
-        puts "Undefined"
+        print_wrong_option
       end
     end
   end
@@ -141,9 +130,7 @@ class RouteController
       available_stations = current_stations.select { |station| current_stations[0] != station && current_stations[current_stations.size - 1] != station }
 
       if (available_stations.size.zero?)
-        puts "==============================="
-        puts "There is no  stations to delete"
-        puts "==============================="
+        show_no_subject("stations to delete")
         return
       end
 
@@ -151,15 +138,13 @@ class RouteController
       available_stations.each_with_index { |station, index| puts "Station #{index + 1} - #{station.name}" }
       puts "=========================="
 
-      user_answer = gets.chomp
+      user_answer = ask_user
 
       break if user_answer == EXIT_PROGRAM
       user_answer = user_answer.to_i
 
       if (!user_answer.positive? || user_answer > available_stations.size)
-        puts "======================="
-        puts "Wrong number, try again"
-        puts "======================="
+        print_wrong_option
         next
       end
 
@@ -171,9 +156,7 @@ class RouteController
 
   def add_station_to_route(route)
     if (@stations.size <= 2)
-      puts "=============================="
-      puts "Not enought stations out there"
-      puts "=============================="
+      show_no_subject("stations out there")
       return
     end
 
@@ -183,9 +166,7 @@ class RouteController
       available_stations = @stations.select { |station| !current_stations.include?(station) }
 
       if (available_stations.size.zero?)
-        puts "========================================"
-        puts "There is no avaliable stations to choose"
-        puts "========================================"
+        show_no_subject("avaliable stations to choose")
         return
       end
 
@@ -193,15 +174,13 @@ class RouteController
       available_stations.each_with_index { |station, index| puts "Station #{index + 1} - #{station.name}" unless current_stations.include?(station) }
       puts "=========================="
 
-      user_answer = gets.chomp
+      user_answer = ask_user
 
       break if user_answer == EXIT_PROGRAM
       user_answer = user_answer.to_i
 
       if (!user_answer.positive? || user_answer > available_stations.size)
-        puts "======================="
-        puts "Wrong number, try again"
-        puts "======================="
+        print_wrong_option
         next
       end
 

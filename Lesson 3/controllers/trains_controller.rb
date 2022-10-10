@@ -1,5 +1,9 @@
+require_relative "../modules/options_module.rb"
+require_relative "../trains/cargo_train.rb"
+require_relative "../trains/passenger_train.rb"
+
 class TrainController
-  EXIT_PROGRAM = "back"
+  include Options
 
   def initialize(trains, routes, carriages)
     @trains = trains
@@ -9,15 +13,12 @@ class TrainController
   end
 
   private
+
   def train_controller
     loop do
-      puts "Choose an action: "
-      puts "1 - create"
-      puts "2 - update"
-      puts "3 - move"
-      puts "Enter 'back' to move back"
+      show_options("Choose an action", ["Create a train", "Update a train", "Move a train"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -38,15 +39,11 @@ class TrainController
     puts "=========================="
     puts "Enter the name of a train:"
     puts "=========================="
-    name = gets.chomp
+    name = ask_user
     return if name == EXIT_PROGRAM
-    puts "=========================="
-    puts "Enter the type of a train (passenger/cargo)"
-    puts "1 - Passenger"
-    puts "2 - Cargo"
-    puts "=========================="
 
-    type = gets.chomp
+    show_options("What is the type of the train?", ["Passenger", "Cargo"])
+    type = ask_user
     return if type == EXIT_PROGRAM
 
     case type
@@ -76,7 +73,7 @@ class TrainController
     puts "=========================="
 
     loop do
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       user_answer = user_answer.to_i
@@ -102,12 +99,9 @@ class TrainController
       return
     end
     loop do
-      puts "Choose the action"
-      puts "1 - move forward to the next station"
-      puts "2 - move back to the previous station"
-      puts "Enter 'back' to move back"
+      show_options("Choose the action", ["Move forward", "Move back"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -116,32 +110,27 @@ class TrainController
       when "2"
         train.to_previous_station
       else
-        puts "Wrong number"
-        break if user_answer == EXIT_PROGRAM
+        print_wrong_option
       end
     end
   end
 
   def update_train_action
     if (@trains.size.zero?)
-      puts "============================"
-      puts "there is no train to update"
-      puts "============================"
+      show_no_subject("train to update")
       return
     end
 
     puts "What train do you want to update?"
     @trains.each_with_index { |train, index| puts "Train #{index + 1}: #{train.number} type: #{train.type}" }
     loop do
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @trains.size)
         break if user_answer == EXIT_PROGRAM
-        puts "======================="
-        puts "Wrong number, try again"
-        puts "======================="
+        print_wrong_option
         next
       end
 
@@ -153,15 +142,9 @@ class TrainController
 
   def update_train(train)
     loop do
-      puts "Choose the action:"
-      puts "1 - add carriage"
-      puts "2 - remove carriage"
-      puts "3 - set a route"
-      puts "4 - set speed"
-      puts "5 - stop"
-      puts "Enter 'back' to move back"
+      show_options("Choose the action", ["Add a carriage", "Remove a carriage", "Set a route", "Set speed", "Stop the train"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -173,21 +156,19 @@ class TrainController
         set_route_to_train(train)
       when "4"
         puts "Enter a speed:"
-        speed = gets.chomp.to_i
+        speed = ask_user.to_i
         train.speed = speed
       when "5"
         train.stop
       else
-        puts "Undefined"
+        print_wrong_option
       end
     end
   end
 
   def add_carriage_to_train(train)
     if (@carriages.size.zero?)
-      puts "=========================="
-      puts "There are no carriages"
-      puts "=========================="
+      show_no_subject('carriages')
       return
     end
 
@@ -196,25 +177,24 @@ class TrainController
 
     puts "Which one would you like to add?"
     loop do
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @carriages.size)
-        puts "Wrong number, try again"
+        print_wrong_option
         next
       end
 
       carriage = @carriages[user_answer - 1]
       train.add_carriage(carriage)
+      return
     end
   end
 
   def remove_carriage_from_train(train)
     if (train.carriages.size.zero?)
-      puts "=========================="
-      puts "There are no carriages"
-      puts "=========================="
+      show_no_subject('carriages')
       return
     else
       train.remove_carriage
@@ -224,7 +204,7 @@ class TrainController
 
   def set_route_to_train(train)
     if (@routes.size.zero?)
-      puts "There are no routes"
+      show_no_subject('routes')
       return
     end
     puts "List of routes:"
@@ -232,12 +212,12 @@ class TrainController
 
     puts "Which one would you like to add?"
     loop do
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @routes.size)
-        puts "Wrong number, try again"
+        print_wrong_option
         next
       end
 

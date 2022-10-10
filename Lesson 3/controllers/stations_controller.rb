@@ -1,5 +1,7 @@
+require_relative "../modules/options_module.rb"
+
 class StationController
-  EXIT_PROGRAM = "back"
+  include Options
 
   def initialize(stations)
     @stations = stations
@@ -7,14 +9,12 @@ class StationController
   end
 
   private
+
   def station_controller
     loop do
-      puts "Choose an action:"
-      puts "1 - get a list of stations"
-      puts "2 - create a station"
-      puts "Enter 'back' to move back"
+      show_options("Choose an action:", ["Get a list of stations", "Create a station"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
@@ -23,16 +23,14 @@ class StationController
       when "2"
         create_station_action
       else
-        puts "Undefined"
+        print_wrong_option
       end
     end
   end
 
   def station_list_action
     if @stations.size.zero?
-      puts "======================"
-      puts "There are no stations!"
-      puts "======================"
+      show_no_subject("stations")
       return
     end
 
@@ -43,14 +41,12 @@ class StationController
 
     loop do
       puts "Enter a number of a station, if you want to explore more (or type 'back' to move back): "
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @stations.size)
-        puts "======================="
-        puts "Wrong number, try again"
-        puts "======================="
+        print_wrong_option
         next
       end
 
@@ -61,7 +57,7 @@ class StationController
 
   def create_station_action
     puts "Enter the name of a new station"
-    name = gets.chomp
+    name = ask_user
 
     @stations << Station.new(name)
     puts "A new station has been created!"
@@ -69,26 +65,23 @@ class StationController
 
   def station_action(station)
     loop do
-      puts "Choose an action:"
-      puts "1 - get the list of trains"
+      show_options("Choose an action:", ["Get the list of trains"])
 
-      user_answer = gets.chomp
+      user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
 
       case user_answer
       when "1"
         station_trains_list(station)
       else
-        puts "Undefined"
+        print_wrong_option
       end
     end
   end
 
   def station_trains_list(station)
     if (station.trains.size.zero?)
-      puts "==================================="
-      puts "There are no trains on this station"
-      puts "==================================="
+      show_no_subject("trains on this station")
     else
       puts "=========================="
       station.trains.each_with_index { |train, index| puts "Train #{index + 1} - #{train.number} - #{train.type}" }
