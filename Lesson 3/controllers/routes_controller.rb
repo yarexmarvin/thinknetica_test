@@ -14,7 +14,7 @@ class RouteController
 
   def route_controller
     loop do
-      show_options("Choose an action", ["Create a route", "Get a list routes"])
+      show_options("Choose an action", ["Create a route", "Get a list routes", "Amount of routes"])
 
       user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
@@ -24,6 +24,8 @@ class RouteController
         create_route_action
       when "2"
         routes_list_action
+      when "3"
+        Route.instances
       else
         print_wrong_option
       end

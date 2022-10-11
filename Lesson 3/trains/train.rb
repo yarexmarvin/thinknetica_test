@@ -1,4 +1,29 @@
+require_relative "../modules/manufacture.rb"
+require_relative "../modules/instance_counter.rb"
+
+
 class Train
+  include Manufacture
+  include InstanceCounter
+
+  @@instance_counter = 0
+
+  @@trains = []
+
+  def self.find(number)
+    if (@@trains.empty?)
+      puts "No trains avalible"
+      return
+    end
+    train = @@trains.find { |find| find.number == number }
+
+    if (train.nil?)
+      puts "Train is not found"
+    else
+      puts train.inspect
+    end
+  end
+
   attr_reader :station, :number, :speed, :type, :route
 
   def initialize(number, type, carriages = [])
@@ -8,6 +33,8 @@ class Train
     @speed = 0
     @station = {}
     @route = []
+    @@trains << self
+    register_instance
   end
 
   def add_carriage(carriage)

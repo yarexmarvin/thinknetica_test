@@ -16,7 +16,7 @@ class TrainController
 
   def train_controller
     loop do
-      show_options("Choose an action", ["Create a train", "Update a train", "Move a train"])
+      show_options("Choose an action", ["Create a train", "Update a train", "Move a train", "Find by number", "Amount of trains"])
 
       user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
@@ -28,11 +28,35 @@ class TrainController
         update_train_action
       when "3"
         move_train_action
+      when "4"
+        fint_train_action
+      when "5"
+        trains_amount_action
       else
         puts "Undefined"
         break if user_answer == EXIT_PROGRAM
       end
     end
+  end
+
+  def trains_amount_action
+    show_options("What is the type of the train?", ["Passenger", "Cargo"])
+    type = ask_user
+    return if type == EXIT_PROGRAM
+    case type
+    when "1"
+      PassengerTrain.instances
+    when "2"
+      CargoTrain.instances
+    else
+      print_wrong_option
+    end
+  end
+
+  def fint_train_action
+    puts "Enter a number of the train:"
+    user_answer = ask_user
+    Train.find(user_answer)
   end
 
   def create_train_action
@@ -134,7 +158,7 @@ class TrainController
 
   def update_train(train)
     loop do
-      show_options("Choose the action", ["Add a carriage", "Remove a carriage", "Set a route", "Set speed", "Stop the train"])
+      show_options("Choose the action", ["Add a carriage", "Remove a carriage", "Set a route", "Set speed", "Stop the train", "Set a manufacturer", "Show manufacturer"])
 
       user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
@@ -152,10 +176,21 @@ class TrainController
         train.speed = speed
       when "5"
         train.stop
+      when "6"
+        add_train_manufacturer(train)
+      when "7"
+        train.get_manufacturer
       else
         print_wrong_option
       end
     end
+  end
+
+  def add_train_manufacturer(train)
+    puts "Enter the name of a manufacturer:"
+    manufacturer = ask_user
+    train.set_manufacturer(manufacturer)
+    puts "Manufacturer has been added!"
   end
 
   def add_carriage_to_train(train)

@@ -1,4 +1,4 @@
-require_relative '../station.rb'
+require_relative "../station.rb"
 require_relative "../modules/options_module.rb"
 
 class StationController
@@ -13,7 +13,7 @@ class StationController
 
   def station_controller
     loop do
-      show_options("Choose an action:", ["Get a list of stations", "Create a station"])
+      show_options("Choose an action:", ["Get a list of stations", "Create a station", "Amount of stations"])
 
       user_answer = ask_user
       break if user_answer == EXIT_PROGRAM
@@ -23,6 +23,8 @@ class StationController
         station_list_action
       when "2"
         create_station_action
+      when "3"
+        Station.instances
       else
         print_wrong_option
       end
@@ -30,14 +32,14 @@ class StationController
   end
 
   def station_list_action
-    if @stations.size.zero?
+    if Station.all.size.zero?
       show_no_subject("stations")
       return
     end
 
     puts "==================="
     puts "Stations available:"
-    @stations.each_with_index { |station, index| puts "Station #{index + 1} - #{station.name}" }
+    Station.all.each_with_index { |station, index| puts "Station #{index + 1}: #{station.name}" }
     puts "==================="
 
     loop do

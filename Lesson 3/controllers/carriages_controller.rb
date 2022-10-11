@@ -58,10 +58,49 @@ class CarriageController
       show_no_subject("carriages")
       return
     end
-    puts "=========================="
-    puts "List of carriages:"
-    @carriages.each_with_index { |carriage, index| puts "Carriage #{index + 1} : #{carriage.name} - #{carriage.type} " }
-    puts "=========================="
-    return
+
+    loop do
+      puts "=========================="
+      puts "List of carriages:"
+      @carriages.each_with_index { |carriage, index| puts "Carriage #{index + 1} : #{carriage.name} - #{carriage.type} " }
+      puts "=========================="
+
+      puts "Which one do you want to choose?"
+      user_answer = ask_user
+      user_answer = user_answer.to_i
+      if (!user_answer.positive? || user_answer.to_i > @carriages.size)
+        print_wrong_option
+        next
+      end
+
+      carriage = @carriages[user_answer - 1]
+
+      carriage_action(carriage)
+    end
+  end
+
+  def carriage_action(carriage)
+    loop do
+      show_options("What do you want to do?", ["Show a manufacturer", "Set a manufacturer"])
+      user_answer = ask_user
+      case user_answer
+      when "1"
+         carriage.get_manufacturer
+         next
+      when "2"
+        add_carriage_manufacturer(carriage)
+        next
+      else
+        print_wrong_option
+        next
+      end
+    end
+  end
+
+  def add_carriage_manufacturer(carriage)
+    puts "Enter the name of a manufacturer:"
+    manufacturer = ask_user
+    carriage.set_manufacturer(manufacturer)
+    puts "Manufacturer has been added!"
   end
 end
