@@ -5,7 +5,6 @@ class Route
 
   include InstanceCounter
 
-  @@instance_counter = 0
   attr_reader :name
 
 

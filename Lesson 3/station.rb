@@ -3,7 +3,6 @@ require_relative "./modules/instance_counter.rb"
 class Station
   include InstanceCounter
 
-  @@instance_counter = 0
   @@stations = []
   def self.all
     @@stations

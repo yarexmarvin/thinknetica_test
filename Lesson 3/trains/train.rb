@@ -5,9 +5,6 @@ require_relative "../modules/instance_counter.rb"
 class Train
   include Manufacture
   include InstanceCounter
-
-  @@instance_counter = 0
-
   @@trains = []
 
   def self.find(number)
