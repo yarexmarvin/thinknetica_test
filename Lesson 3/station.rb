@@ -10,7 +10,7 @@ class Station
     @@stations
   end
 
-  attr_reader :name
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
@@ -18,10 +18,6 @@ class Station
     @@stations << self
     register_instance
     validate("station", "name", name)
-  end
-
-  def trains
-    @trains
   end
 
   def add_train(train)

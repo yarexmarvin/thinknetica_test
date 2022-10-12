@@ -1,4 +1,4 @@
-require_relative "../modules/options_module.rb"
+require_relative "../modules/options.rb"
 require_relative "../trains/cargo_train.rb"
 require_relative "../trains/passenger_train.rb"
 require_relative "../modules/validation.rb"
@@ -19,9 +19,8 @@ class TrainController
   def train_controller
     loop do
       show_options("Choose an action", ["Create a train", "Update a train", "Move a train", "Find by number", "Amount of trains"])
-
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
       when "1"
@@ -31,12 +30,12 @@ class TrainController
       when "3"
         move_train_action
       when "4"
-        fint_train_action
+        find_train_action
       when "5"
         trains_amount_action
       else
         puts "Undefined"
-        break if user_answer == EXIT_PROGRAM
+        break if EXIT_PROGRAM.include?(user_answer)
       end
     end
   end
@@ -44,7 +43,7 @@ class TrainController
   def trains_amount_action
     show_options("What is the type of the train?", ["Passenger", "Cargo"])
     type = ask_user
-    return if type == EXIT_PROGRAM
+    return if EXIT_PROGRAM.include?(type)
     case type
     when "1"
       PassengerTrain.instances
@@ -55,24 +54,27 @@ class TrainController
     end
   end
 
-  def fint_train_action
+  def find_train_action
+    puts "============================"
     puts "Enter a number of the train:"
+    puts "============================"
+
     user_answer = ask_user
     target_train = Train.find(user_answer)
     if (target_train.nil?)
       puts "Train is not found"
     else
-     puts "Train: #{target_train}"
+      puts "Train: #{target_train}"
     end
   end
 
   def create_train_action
     loop do
-      puts "=========================="
+      puts "============================"
       puts "Enter the number of a train:"
-      puts "=========================="
+      puts "============================"
       number = ask_user
-      break if number == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(number)
 
       validNumber = valid("train", "number", number)
 
@@ -82,7 +84,7 @@ class TrainController
 
       show_options("What is the type of the train?", ["Passenger", "Cargo"])
       type = ask_user
-      return if type == EXIT_PROGRAM
+      return if EXIT_PROGRAM.include?(type)
 
       case type
       when "1"
@@ -90,10 +92,10 @@ class TrainController
         break
       when "2"
         @trains << CargoTrain.new(number, "cargo")
-        break
+        return
       else
         print_wrong_option
-        return
+        next
       end
     end
   end
@@ -104,18 +106,17 @@ class TrainController
       return
     end
 
-    puts "=========================="
-    puts "What train do you want to move?"
-    @trains.each_with_index { |train, index| puts "Train #{index + 1}: #{train.number} type: #{train.type}" }
-    puts "=========================="
-
     loop do
+      puts "=========================="
+      puts "What train do you want to move?"
+      @trains.each_with_index { |train, index| puts "Train #{index + 1}: #{train.number} type: #{train.type}" }
+      puts "=========================="
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @trains.size)
-        break if user_answer == EXIT_PROGRAM
+        break if EXIT_PROGRAM.include?(user_answer)
         print_wrong_option
         next
       end
@@ -135,7 +136,7 @@ class TrainController
       show_options("Choose the action", ["Move forward", "Move back"])
 
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
       when "1"
@@ -154,15 +155,18 @@ class TrainController
       return
     end
 
+    puts "==================================="
     puts "What train do you want to update?"
-    @trains.each_with_index { |train, index| puts "Train #{index + 1}: #{train.number} type: #{train.type}" }
+    @trains.each_with_index { |train, index| puts "#{index + 1} - Train #{index + 1}: #{train.number}, Type: #{train.type}" }
+    puts "==================================="
+
     loop do
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @trains.size)
-        break if user_answer == EXIT_PROGRAM
+        break if EXIT_PROGRAM.include?(user_answer)
         print_wrong_option
         next
       end
@@ -178,7 +182,7 @@ class TrainController
       show_options("Choose the action", ["Add a carriage", "Remove a carriage", "Set a route", "Set speed", "Stop the train", "Set a manufacturer", "Show manufacturer"])
 
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
       when "1"
@@ -204,10 +208,14 @@ class TrainController
   end
 
   def add_train_manufacturer(train)
+    puts "==================================="
     puts "Enter the name of a manufacturer:"
+    puts "==================================="
     manufacturer = ask_user
     train.set_manufacturer(manufacturer)
-    puts "Manufacturer has been added!"
+    puts "============================================================================="
+    puts "Manufacturer: #{manufacturer} for the train #{train.number} has been updated!"
+    puts "============================================================================="
   end
 
   def add_carriage_to_train(train)
@@ -216,13 +224,15 @@ class TrainController
       return
     end
 
-    puts "List of carriages:"
-    @carriages.each_with_index { |carriage, index| puts "Carriage #{index + 1} : #{carriage.name} - #{carriage.type} " }
-
-    puts "Which one would you like to add?"
     loop do
+      puts "==================================="
+      puts "List of carriages:"
+      @carriages.each_with_index { |carriage, index| puts "#{index + 1} - Carriage #{index + 1}: #{carriage.name}, Type: #{carriage.type}" }
+      puts "==================================="
+      puts "Which one would you like to add?"
+      puts "==================================="
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @carriages.size)
@@ -232,6 +242,9 @@ class TrainController
 
       carriage = @carriages[user_answer - 1]
       train.add_carriage(carriage)
+      puts "#########################################################################"
+      puts "The carriage #{carriage.name} has been added to the train #{train.number}"
+      puts "#########################################################################"
       return
     end
   end
@@ -242,6 +255,9 @@ class TrainController
       return
     else
       train.remove_carriage
+      puts "#############################"
+      puts "The carriage has been deleted"
+      puts "#############################"
       return
     end
   end
@@ -251,13 +267,16 @@ class TrainController
       show_no_subject("routes")
       return
     end
-    puts "List of routes:"
-    @routes.each_with_index { |routes, index| puts "Route #{index + 1} : #{routes.name} " }
 
-    puts "Which one would you like to add?"
     loop do
+      puts "==================================="
+      puts "List of routes:"
+      @routes.each_with_index { |routes, index| puts "#{index + 1} - Route #{index + 1}: #{routes.name}" }
+      puts "==================================="
+      puts "Which one would you like to add?"
+      puts "==================================="
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer > @routes.size)
@@ -267,6 +286,9 @@ class TrainController
 
       route = @routes[user_answer - 1]
       train.add_route(route)
+      puts "#############################################"
+      puts "A new route -  #{route.name} - has been set"
+      puts "#############################################"
       break
     end
   end

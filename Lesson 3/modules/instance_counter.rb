@@ -6,16 +6,18 @@ module InstanceCounter
 
   module ClassMethods
     def instances
+      if (!self.class_variable_defined?(:@@instance_counter))
+        self.class_variable_set(:@@instance_counter, 0)
+      end
       instance_counter = self.class_variable_get(:@@instance_counter)
       if (instance_counter.nil? || instance_counter.zero?)
-        puts '----------------------'
+        puts "----------------------"
         puts "There is no instances"
-        puts '----------------------'
-
+        puts "----------------------"
       else
-        puts '#####################################'
+        puts "#####################################"
         puts "#{self.name}s: #{instance_counter}"
-        puts '#####################################'
+        puts "#####################################"
       end
     end
   end

@@ -1,9 +1,11 @@
-require_relative "../modules/options_module.rb"
+require_relative "../modules/options.rb"
 require "./carriages/passenger_carriage.rb"
 require "./carriages/cargo_carriage.rb"
+require_relative "../modules/validation.rb"
 
 class CarriageController
   include Options
+  include Validation
 
   def initialize(carriages)
     @carriages = carriages
@@ -16,7 +18,7 @@ class CarriageController
     loop do
       show_options("Choose an action:", ["Create a carriage", "Show the list of carriages"])
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
       when "1"
@@ -30,27 +32,35 @@ class CarriageController
   end
 
   def create_carriage_action
-    puts "=========================="
-    puts "Enter the name of a carriage:"
-    puts "=========================="
-    name = ask_user
-    show_options("Enter the type of a carriage", ["Passenger", "Cargo"])
-    type = ask_user
+    loop do
+      puts "============================="
+      puts "Enter the name of a carriage:"
+      puts "============================="
+      name = ask_user
+      break if EXIT_PROGRAM.include?(name)
+      validName = valid("carriage", "name", name)
+      unless (validName)
+        next
+      end
 
-    case type
-    when "1"
-      @carriages << PassengerCarriage.new(name, "passenger")
-    when "2"
-      @carriages << CargoCarriage.new(name, "cargo")
-    else
-      print_wrong_option
-      return
+      show_options("Enter the type of a carriage", ["Passenger", "Cargo"])
+      type = ask_user
+
+      case type
+      when "1"
+        @carriages << PassengerCarriage.new(name, "passenger")
+      when "2"
+        @carriages << CargoCarriage.new(name, "cargo")
+      else
+        print_wrong_option
+        next
+      end
+
+      puts "================================"
+      puts "A new carriage has been created!"
+      puts "================================"
+      break
     end
-
-    puts "================================"
-    puts "A new carriage has been create!"
-    puts "================================"
-    return
   end
 
   def carriages_list_action
@@ -67,6 +77,8 @@ class CarriageController
 
       puts "Which one do you want to choose?"
       user_answer = ask_user
+      break if EXIT_PROGRAM.include?(user_answer)
+
       user_answer = user_answer.to_i
       if (!user_answer.positive? || user_answer.to_i > @carriages.size)
         print_wrong_option
@@ -83,10 +95,12 @@ class CarriageController
     loop do
       show_options("What do you want to do?", ["Show a manufacturer", "Set a manufacturer"])
       user_answer = ask_user
+      break if EXIT_PROGRAM.include?(user_answer)
+
       case user_answer
       when "1"
-         carriage.get_manufacturer
-         next
+        carriage.get_manufacturer
+        next
       when "2"
         add_carriage_manufacturer(carriage)
         next
@@ -98,9 +112,13 @@ class CarriageController
   end
 
   def add_carriage_manufacturer(carriage)
+    puts "================================="
     puts "Enter the name of a manufacturer:"
+    puts "=================================="
     manufacturer = ask_user
     carriage.set_manufacturer(manufacturer)
-    puts "Manufacturer has been added!"
+    puts "===================================================================================="
+    puts "Manufacturer - #{manufacturer} - has been updated for the carriage #{carriage.name}!"
+    puts "===================================================================================="
   end
 end

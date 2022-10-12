@@ -1,13 +1,12 @@
 module Options
-  EXIT_PROGRAM = "back"
+  EXIT_PROGRAM = ["back", "0"] 
 
   def show_options(title, options)
     puts "============================"
     puts title
+    puts "0 - go back"
     options.each_with_index { |option, index| puts "#{index + 1} - #{option}" }
     puts "============================"
-    puts "Type 'back' to go back"
-    puts "____________________________"
   end
 
   def show_no_subject(subject)

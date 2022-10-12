@@ -1,5 +1,5 @@
 
-require_relative "./modules/options_module.rb"
+require_relative "./modules/options.rb"
 require_relative "./controllers/carriages_controller.rb"
 require_relative "./controllers/routes_controller.rb"
 require_relative "./controllers/stations_controller.rb"
@@ -14,13 +14,14 @@ class Railroad
     @trains = []
     @routes = []
     @carriages = []
+    start_app
   end
 
   def start_app
     loop do
       show_options("Choose the subject", ["Trains", "Routes", "Carriages", "Stations"])
       user_answer = ask_user
-      break if user_answer == EXIT_PROGRAM
+      break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
       when "1"
@@ -39,4 +40,3 @@ class Railroad
 end
 
 app1 = Railroad.new
-app1.start_app
