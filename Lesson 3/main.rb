@@ -39,4 +39,4 @@ class Railroad
   end
 end
 
-app1 = Railroad.new
+Railroad.new

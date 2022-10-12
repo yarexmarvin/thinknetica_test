@@ -188,7 +188,7 @@ class TrainController
       when "1"
         add_carriage_to_train(train)
       when "2"
-        train.remove_carriage
+        remove_carriage_from_train(train)
       when "3"
         set_route_to_train(train)
       when "4"
@@ -219,7 +219,9 @@ class TrainController
   end
 
   def add_carriage_to_train(train)
-    if (@carriages.size.zero?)
+    filtered_carriages = @carriages.select { |carriage| !train.carriages.include?(carriage) }
+
+    if (filtered_carriages.size.zero?)
       show_no_subject("carriages")
       return
     end
@@ -227,7 +229,7 @@ class TrainController
     loop do
       puts "==================================="
       puts "List of carriages:"
-      @carriages.each_with_index { |carriage, index| puts "#{index + 1} - Carriage #{index + 1}: #{carriage.name}, Type: #{carriage.type}" }
+      filtered_carriages.each_with_index { |carriage, index| puts "#{index + 1} - Carriage #{index + 1}: #{carriage.name}, Type: #{carriage.type}" }
       puts "==================================="
       puts "Which one would you like to add?"
       puts "==================================="
@@ -235,16 +237,19 @@ class TrainController
       break if EXIT_PROGRAM.include?(user_answer)
 
       user_answer = user_answer.to_i
-      if (!user_answer.positive? || user_answer > @carriages.size)
+      if (!user_answer.positive? || user_answer > filtered_carriages.size)
         print_wrong_option
         next
       end
 
-      carriage = @carriages[user_answer - 1]
+      carriage = filtered_carriages[user_answer - 1]
+      prev_train_amount = train.carriages.size
       train.add_carriage(carriage)
-      puts "#########################################################################"
-      puts "The carriage #{carriage.name} has been added to the train #{train.number}"
-      puts "#########################################################################"
+      if (train.carriages.size > prev_train_amount)
+        puts "#########################################################################"
+        puts "The carriage #{carriage.name} has been added to the train #{train.number}"
+        puts "#########################################################################"
+      end
       return
     end
   end
@@ -254,10 +259,14 @@ class TrainController
       show_no_subject("carriages")
       return
     else
+      prev_train_amount = train.carriages.size
+
       train.remove_carriage
-      puts "#############################"
-      puts "The carriage has been deleted"
-      puts "#############################"
+      if (train.carriages.size < prev_train_amount)
+        puts "#############################"
+        puts "The carriage has been deleted"
+        puts "#############################"
+      end
       return
     end
   end

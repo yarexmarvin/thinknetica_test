@@ -15,7 +15,7 @@ class Train
     @@trains.find { |find| find.number == number }
   end
 
-  attr_reader :station, :number, :speed, :type, :route
+  attr_reader :station, :number, :speed, :type, :route, :carriages
 
   def initialize(number, type, carriages = [])
     @number = number
@@ -36,7 +36,7 @@ class Train
   end
 
   def remove_carriage
-    if (@carriages.size.positive?)
+    if (@carriages.size.positive? && @speed.zero?)
       @carriages.pop
     end
   end
