@@ -1,9 +1,11 @@
 require_relative "../modules/options_module.rb"
 require_relative "../trains/cargo_train.rb"
 require_relative "../trains/passenger_train.rb"
+require_relative "../modules/validation.rb"
 
 class TrainController
   include Options
+  include Validation
 
   def initialize(trains, routes, carriages)
     @trains = trains
@@ -56,28 +58,43 @@ class TrainController
   def fint_train_action
     puts "Enter a number of the train:"
     user_answer = ask_user
-    Train.find(user_answer)
+    target_train = Train.find(user_answer)
+    if (target_train.nil?)
+      puts "Train is not found"
+    else
+     puts "Train: #{target_train}"
+    end
   end
 
   def create_train_action
-    puts "=========================="
-    puts "Enter the name of a train:"
-    puts "=========================="
-    name = ask_user
-    return if name == EXIT_PROGRAM
+    loop do
+      puts "=========================="
+      puts "Enter the number of a train:"
+      puts "=========================="
+      number = ask_user
+      break if number == EXIT_PROGRAM
 
-    show_options("What is the type of the train?", ["Passenger", "Cargo"])
-    type = ask_user
-    return if type == EXIT_PROGRAM
+      validNumber = valid("train", "number", number)
 
-    case type
-    when "1"
-      return @trains << PassengerTrain.new(name, "passenger")
-    when "2"
-      return @trains << CargoTrain.new(name, "cargo")
-    else
-      print_wrong_option
-      return
+      unless (validNumber)
+        next
+      end
+
+      show_options("What is the type of the train?", ["Passenger", "Cargo"])
+      type = ask_user
+      return if type == EXIT_PROGRAM
+
+      case type
+      when "1"
+        @trains << PassengerTrain.new(number, "passenger")
+        break
+      when "2"
+        @trains << CargoTrain.new(number, "cargo")
+        break
+      else
+        print_wrong_option
+        return
+      end
     end
   end
 

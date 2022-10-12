@@ -1,12 +1,11 @@
 require_relative "./modules/instance_counter.rb"
-
+require_relative "./modules/validation.rb"
 
 class Route
-
   include InstanceCounter
+  include Validation
 
   attr_reader :name
-
 
   def initialize(name, start_station, end_station, stations_in_between = [])
     @name = name
@@ -14,7 +13,7 @@ class Route
     @end = end_station
     @stations = stations_in_between
     register_instance
-
+    validate("route", "name", name)
   end
 
   def add_station(station_name)
@@ -22,11 +21,8 @@ class Route
   end
 
   def remove_station(target_station)
-    puts target_station.inspect
-    puts @stations.inspect
     index = @stations.index(target_station)
     @stations.slice!(index)
-    puts "Stations left #{@stations}"
   end
 
   def get_route
@@ -35,5 +31,4 @@ class Route
     result.push(@end)
     return result
   end
-  
 end

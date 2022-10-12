@@ -37,12 +37,13 @@ class StationController
       return
     end
 
-    puts "==================="
-    puts "Stations available:"
-    Station.all.each_with_index { |station, index| puts "Station #{index + 1}: #{station.name}" }
-    puts "==================="
+
 
     loop do
+      puts "==================="
+      puts "Stations available:"
+      Station.all.each_with_index { |station, index| puts "Station #{index + 1}: #{station.name}" }
+      puts "==================="
       puts "Enter a number of a station, if you want to explore more (or type 'back' to move back): "
       user_answer = ask_user
       break if user_answer == EXIT_PROGRAM

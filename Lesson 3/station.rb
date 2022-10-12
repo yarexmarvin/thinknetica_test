@@ -1,7 +1,9 @@
 require_relative "./modules/instance_counter.rb"
+require_relative "./modules/validation.rb"
 
 class Station
   include InstanceCounter
+  include Validation
 
   @@stations = []
   def self.all
@@ -15,6 +17,7 @@ class Station
     @trains = []
     @@stations << self
     register_instance
+    validate("station", "name", name)
   end
 
   def trains
@@ -22,9 +25,7 @@ class Station
   end
 
   def add_train(train)
-    puts "#{@name}: New train #{train.number} has just arrived!"
     @trains << train
-    puts "#{@name}: total list of trains #{get_trains_by_type}"
   end
 
   def get_trains_by_type
@@ -36,11 +37,8 @@ class Station
 
   def depart_train(train)
     if (@trains.include?(train))
-      puts "#{@name}: Train #{train.number} has just departed!"
       @trains.delete(train)
       @trains.compact!
-    else
-      puts "#{@name}: Error, there is no #{train} train at this station!"
     end
   end
 end
