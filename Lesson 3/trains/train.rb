@@ -24,9 +24,20 @@ class Train
     @speed = 0
     @station = {}
     @route = []
+
+    validate("train", "number", number)
+
     @@trains << self
     register_instance
-    validate("train", "number", number)
+  end
+
+  def valid?
+    begin
+      validate("train", "number", number)
+      true
+    rescue
+      false
+    end
   end
 
   def add_carriage(carriage)

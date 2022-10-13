@@ -4,18 +4,6 @@ module Validation
   STATION_NAME = /^\w{2,}(\d+|\w+)$/i
   TRAIN_NUMBER = /^(\d|[a-z]){3}\-?(\d|[a-z]){2}$/i
 
-  def valid(item, attr, value)
-    begin
-      validate(item, attr, value)
-      return true
-    rescue
-      puts '||||||||||||||||||||||||||||||||||||||||||||||||'
-      puts "Invalid format for #{item}'s attribute: #{attr}"
-      puts '||||||||||||||||||||||||||||||||||||||||||||||||'
-      return false
-    end
-  end
-
   def validate(item, attr, value)
     case item
     when "train"

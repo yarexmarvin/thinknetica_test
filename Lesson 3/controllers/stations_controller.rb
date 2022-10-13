@@ -60,23 +60,14 @@ class StationController
   end
 
   def create_station_action
-    loop do
       puts "==============================="
       puts "Enter the name of a new station"
       puts "==============================="
       name = ask_user
-      break if EXIT_PROGRAM.include?(name)
-
-      validName = valid("station", "name", name)
-
-      unless (validName)
-        next
-      end
+      return if EXIT_PROGRAM.include?(name)
 
       @stations << Station.new(name)
       puts "A new station has been created!"
-      break
-    end
   end
 
   def station_action(station)

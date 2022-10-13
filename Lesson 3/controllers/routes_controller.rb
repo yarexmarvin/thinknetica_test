@@ -48,10 +48,6 @@ class RouteController
       puts "============================="
       name = ask_user
       break if EXIT_PROGRAM.include?(name)
-      validName = valid("route", "name", name)
-      unless (validName)
-        next
-      end
    
       puts "=========================="
       puts "Choose start point"

@@ -38,10 +38,6 @@ class CarriageController
       puts "============================="
       name = ask_user
       break if EXIT_PROGRAM.include?(name)
-      validName = valid("carriage", "name", name)
-      unless (validName)
-        next
-      end
 
       show_options("Enter the type of a carriage", ["Passenger", "Cargo"])
       type = ask_user
