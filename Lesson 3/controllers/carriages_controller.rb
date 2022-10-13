@@ -41,16 +41,52 @@ class CarriageController
 
       show_options("Enter the type of a carriage", ["Passenger", "Cargo"])
       type = ask_user
+      break if EXIT_PROGRAM.include?(type)
 
       case type
       when "1"
-        @carriages << PassengerCarriage.new(name, "passenger")
+        create_passenger_carriage(name)
       when "2"
-        @carriages << CargoCarriage.new(name, "cargo")
+        create_cargo_carriage(name)
       else
         print_wrong_option
         next
       end
+      break
+    end
+  end
+
+  def create_passenger_carriage(name)
+    loop do
+      puts "How many seats in this carriage?"
+      seats = ask_user
+
+      if (seats.to_i <= 0)
+        print_wrong_option
+        next
+      end
+
+      @carriages << PassengerCarriage.new(name, "passenger", seats.to_i)
+
+      puts "================================"
+      puts "A new carriage has been created!"
+      puts "================================"
+
+      break
+    end
+  end
+
+  def create_cargo_carriage(name)
+    loop do
+      puts "What is the carriage capacity?"
+      capacity = ask_user
+
+      if (capacity.to_i <= 0)
+        print_wrong_option
+        next
+      end
+
+      @carriages << CargoCarriage.new(name, "cargo", capacity.to_i)
 
       puts "================================"
       puts "A new carriage has been created!"
@@ -83,27 +119,78 @@ class CarriageController
 
       carriage = @carriages[user_answer - 1]
 
-      carriage_action(carriage)
+      carriage_action(carriage, carriage.type)
     end
   end
 
-  def carriage_action(carriage)
+  def carriage_action(carriage, type)
+    case type
+    when "passenger"
+      passenger_carriage_actions(carriage)
+    when "cargo"
+      cargo_carriage_actions(carriage)
+    end
+  end
+
+  def passenger_carriage_actions(carriage)
     loop do
-      show_options("What do you want to do?", ["Show a manufacturer", "Set a manufacturer"])
+      show_options("What do you want to do?", ["Show a manufacturer", "Set a manufacturer", "Show amount of seats", "Show available seats", "Take a seat"])
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
       when "1"
         carriage.get_manufacturer
-        next
       when "2"
         add_carriage_manufacturer(carriage)
-        next
+      when "3"
+        puts "Total amount of seats: #{carriage.seats}"
+      when "4"
+        puts "Available seats: #{carriage.free_seats}"
+      when "5"
+        carriage.take_a_seat
       else
+        print_wrong_option
+      end
+    end
+  end
+
+  def cargo_carriage_actions(carriage)
+    loop do
+      show_options("What do you want to do?", ["Show a manufacturer", "Set a manufacturer", "Show a carriage capacity", "Show available capacity", "Fill the capacity"])
+      user_answer = ask_user
+      break if EXIT_PROGRAM.include?(user_answer)
+
+      case user_answer
+      when "1"
+        carriage.get_manufacturer
+      when "2"
+        add_carriage_manufacturer(carriage)
+      when "3"
+        puts "Total amount of capacity: #{carriage.capacity}"
+      when "4"
+        puts "Available capacity: #{carriage.free_capacity}"
+      when "5"
+        fill_carriage_capacity(carriage)
+      else
+        print_wrong_option
+      end
+    end
+  end
+
+  def fill_carriage_capacity(carriage)
+    loop do
+      puts 'How much do you want to fill?'
+      user_answer = ask_user
+      break if EXIT_PROGRAM.include?(user_answer)
+
+      if(user_answer.to_i < 0)
         print_wrong_option
         next
       end
+
+      carriage.fill_capacity(user_answer.to_i)
+      break
     end
   end
 

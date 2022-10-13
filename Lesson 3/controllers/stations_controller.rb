@@ -93,7 +93,7 @@ class StationController
       show_no_subject("trains on this station")
     else
       puts "=========================="
-      station.trains.each_with_index { |train, index| puts "Train #{index + 1} - #{train.number} - #{train.type}" }
+      station.iterate_through_trains { |train| puts "Train: #{train.number}, type: #{train.type}, carriages: #{train.carriages.size}" }
       puts "=========================="
     end
   end

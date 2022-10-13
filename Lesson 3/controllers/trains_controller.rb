@@ -18,7 +18,7 @@ class TrainController
 
   def train_controller
     loop do
-      show_options("Choose an action", ["Create a train", "Update a train", "Move a train", "Find by number", "Amount of trains"])
+      show_options("Choose an action", ["Create a train", "Update a train", "Move a train", "Find by number", "Amount of trains", "Show train's carriages"])
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
@@ -33,10 +33,52 @@ class TrainController
         find_train_action
       when "5"
         trains_amount_action
+      when "6"
+        train_carriages_action
       else
         puts "Undefined"
         break if EXIT_PROGRAM.include?(user_answer)
       end
+    end
+  end
+
+  def train_carriages_action
+    if (@trains.size.zero?)
+      show_no_subject("trains")
+      return
+    end
+    loop do
+      puts "=========================="
+      puts "What train do you want to see?"
+      @trains.each_with_index { |train, index| puts "#{index + 1} - Train: #{train.number} type: #{train.type}" }
+      puts "=========================="
+      user_answer = ask_user
+      break if EXIT_PROGRAM.include?(user_answer)
+
+      user_answer = user_answer.to_i
+      if (!user_answer.positive? || user_answer > @trains.size)
+        break if EXIT_PROGRAM.include?(user_answer)
+        print_wrong_option
+        next
+      end
+
+      target_train = @trains[user_answer - 1]
+
+      if (target_train.carriages.size.zero?)
+        show_no_subject("carriages found")
+        next
+      end
+
+      case target_train.type
+      when "passenger"
+        target_train.iterate_through_carriages { |carriage| puts "Carriage: #{carriage.name}, seats: #{carriage.seats}, avaliable seats #{carriage.free_seats}" }
+      when "cargo"
+        target_train.iterate_through_carriages { |carriage| puts "Carriage: #{carriage.name}, capacity: #{carriage.capacity}, avaliable seats #{carriage.free_capacity}" }
+      else
+        print_wrong_option
+      end
+
+      break
     end
   end
 
@@ -65,6 +107,7 @@ class TrainController
       puts "Train is not found"
     else
       puts "Train: #{target_train}"
+      target_train
     end
   end
 
@@ -76,9 +119,10 @@ class TrainController
       number = ask_user
       break if EXIT_PROGRAM.include?(number)
 
-      validNumber = valid("train", "number", number)
-
-      unless (validNumber)
+      begin
+        validate("train", "number", number)
+      rescue
+        puts "Wrong number, try again!"
         next
       end
 
@@ -109,7 +153,7 @@ class TrainController
     loop do
       puts "=========================="
       puts "What train do you want to move?"
-      @trains.each_with_index { |train, index| puts "Train #{index + 1}: #{train.number} type: #{train.type}" }
+      @trains.each_with_index { |train, index| puts "#{index + 1} - Train: #{train.number} type: #{train.type}" }
       puts "=========================="
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)

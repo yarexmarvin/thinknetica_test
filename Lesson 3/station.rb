@@ -29,6 +29,10 @@ class Station
     end
   end
 
+  def iterate_through_trains
+    @trains.each { |train| yield(train) }
+  end
+
   def add_train(train)
     @trains << train
   end

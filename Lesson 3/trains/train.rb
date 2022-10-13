@@ -40,6 +40,10 @@ class Train
     end
   end
 
+  def iterate_through_carriages
+    @carriages.each { |carriage| yield(carriage) }
+  end
+
   def add_carriage(carriage)
     if (speed.zero? && @type == carriage.type)
       @carriages << carriage
