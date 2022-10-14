@@ -256,7 +256,7 @@ class TrainController
   end
 
   def add_carriage_to_train(train)
-    filtered_carriages = @carriages.select { |carriage| !train.carriages.include?(carriage) }
+    filtered_carriages = @carriages.select { |carriage| !train.carriages.include?(carriage) && !check_carriage_in_trains(carriage) }
 
     if (filtered_carriages.size.zero?)
       show_no_subject("carriages")
@@ -289,6 +289,10 @@ class TrainController
       end
       return
     end
+  end
+
+  def check_carriage_in_trains(carriage)
+    @trains.any? { |train| train.carriages.include?(carriage) }
   end
 
   def remove_carriage_from_train(train)
