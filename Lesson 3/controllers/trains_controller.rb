@@ -69,14 +69,7 @@ class TrainController
         next
       end
 
-      case target_train.type
-      when "passenger"
-        target_train.iterate_through_carriages { |carriage| puts "Carriage: #{carriage.name}, seats: #{carriage.seats}, avaliable seats #{carriage.free_seats}" }
-      when "cargo"
-        target_train.iterate_through_carriages { |carriage| puts "Carriage: #{carriage.name}, capacity: #{carriage.capacity}, avaliable seats #{carriage.free_capacity}" }
-      else
-        print_wrong_option
-      end
+      target_train.iterate_through_carriages { |carriage| puts "Carriage: #{carriage.name}, capacity: #{carriage.volume}, avaliable seats #{carriage.free_volume}" }
 
       break
     end

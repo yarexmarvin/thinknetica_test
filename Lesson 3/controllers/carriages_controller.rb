@@ -144,11 +144,11 @@ class CarriageController
       when "2"
         add_carriage_manufacturer(carriage)
       when "3"
-        puts "Total amount of seats: #{carriage.seats}"
+        puts "Total amount of seats: #{carriage.volume}"
       when "4"
-        puts "Available seats: #{carriage.free_seats}"
+        puts "Available seats: #{carriage.free_volume}"
       when "5"
-        carriage.take_a_seat
+        carriage.fill_volume
       else
         print_wrong_option
       end
@@ -167,9 +167,9 @@ class CarriageController
       when "2"
         add_carriage_manufacturer(carriage)
       when "3"
-        puts "Total amount of capacity: #{carriage.capacity}"
+        puts "Total amount of capacity: #{carriage.volume}"
       when "4"
-        puts "Available capacity: #{carriage.free_capacity}"
+        puts "Available capacity: #{carriage.free_volume}"
       when "5"
         fill_carriage_capacity(carriage)
       else
@@ -189,7 +189,7 @@ class CarriageController
         next
       end
 
-      carriage.fill_capacity(user_answer.to_i)
+      carriage.fill_volume(user_answer.to_i)
       break
     end
   end

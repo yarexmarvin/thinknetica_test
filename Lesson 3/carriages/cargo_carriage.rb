@@ -1,22 +1,10 @@
 require_relative "carriage.rb"
 
 class CargoCarriage < Carriage
-  attr_reader :capacity, :filled_capacity
-
-  def initialize(name, type, capacity)
-    super(name, type)
-    @capacity = capacity
-    @filled_capacity = 0
-  end
-
-  def fill_capacity(capacity)
-    result = @filled_capacity + capacity <= @capacity
+  def fill_volume(volume)
+    result = @filled_volume + volume <= @volume
     if (result)
-      @filled_capacity += capacity
+      @filled_volume += volume
     end
-  end
-
-  def free_capacity
-    @capacity - @filled_capacity
   end
 end
