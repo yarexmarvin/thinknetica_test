@@ -1,12 +1,12 @@
 module Options
-  EXIT_PROGRAM = ["back", "0"] 
+  EXIT_PROGRAM = %w[back 0]
 
   def show_options(title, options)
-    puts "============================"
+    puts '============================'
     puts title
-    puts "0 - go back"
+    puts '0 - go back'
     options.each_with_index { |option, index| puts "#{index + 1} - #{option}" }
-    puts "============================"
+    puts '============================'
   end
 
   def show_no_subject(subject)
@@ -16,22 +16,20 @@ module Options
   end
 
   def print_wrong_option
-    puts "###############################################"
-    puts "This option does not exist, try a different one"
-    puts "###############################################"
-    return
+    puts '###############################################'
+    puts 'This option does not exist, try a different one'
+    puts '###############################################'
+    nil
   end
 
   def ask_user
-    user_response = ""
+    user_response = ''
 
-    while user_response == ""
+    while user_response == ''
       user_response = gets.chomp
-      if user_response.strip == ""
-        puts "Enter your option or enter 'back' to go back!"
-      end
+      puts "Enter your option or enter 'back' to go back!" if user_response.strip == ''
     end
 
-    return user_response
+    user_response
   end
 end

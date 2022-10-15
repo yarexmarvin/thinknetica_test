@@ -1,12 +1,10 @@
-
-require_relative "./modules/options.rb"
-require_relative "./controllers/carriages_controller.rb"
-require_relative "./controllers/routes_controller.rb"
-require_relative "./controllers/stations_controller.rb"
-require_relative "./controllers/trains_controller.rb"
+require_relative './modules/options'
+require_relative './controllers/carriages_controller'
+require_relative './controllers/routes_controller'
+require_relative './controllers/stations_controller'
+require_relative './controllers/trains_controller'
 
 class Railroad
-
   include Options
 
   def initialize
@@ -19,18 +17,18 @@ class Railroad
 
   def start_app
     loop do
-      show_options("Choose the subject", ["Trains", "Routes", "Carriages", "Stations"])
+      show_options('Choose the subject', %w[Trains Routes Carriages Stations])
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
-      when "1"
+      when '1'
         TrainController.new(@trains, @routes, @carriages)
-      when "2"
+      when '2'
         RouteController.new(@routes, @stations)
-      when "3"
+      when '3'
         CarriageController.new(@carriages)
-      when "4"
+      when '4'
         StationController.new(@stations)
       else
         print_wrong_option

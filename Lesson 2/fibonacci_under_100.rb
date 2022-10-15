@@ -10,6 +10,7 @@ loop do
   elsif numbers.length > 2
     fib = numbers[index - 1] + numbers[index - 2]
     break if fib > 100
+
     numbers << fib
   end
   index += 1

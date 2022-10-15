@@ -1,5 +1,3 @@
-
-
 puts 'Enter the triangle base'
 
 base = gets.chomp.to_i

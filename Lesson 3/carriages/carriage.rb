@@ -1,5 +1,5 @@
-require_relative "../modules/manufacture.rb"
-require_relative "../modules/validation.rb"
+require_relative '../modules/manufacture'
+require_relative '../modules/validation'
 
 class Carriage
   include Manufacture
@@ -12,16 +12,14 @@ class Carriage
     @type = type
     @volume = volume
     @filled_volume = 0
-    validate("carriage", "name", name)
+    validate('carriage', 'name', name)
   end
 
   def valid?
-    begin
-      validate("carriage", "name", name)
-      true
-    rescue
-      false
-    end
+    validate('carriage', 'name', name)
+    true
+  rescue StandardError
+    false
   end
 
   def free_volume

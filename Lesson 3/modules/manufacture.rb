@@ -4,14 +4,14 @@ module Manufacture
   end
 
   def get_manufacturer
-    if (@manufacturer)
-      puts "============================="
+    if @manufacturer
+      puts '============================='
       puts "Manufacturer: #{@manufacturer}"
-      puts "============================="
+      puts '============================='
     else
-      puts "####################################################"
-      puts "The manufacturer for this carriage has not been set!"
-      puts "####################################################"
+      puts '####################################################'
+      puts 'The manufacturer for this carriage has not been set!'
+      puts '####################################################'
     end
   end
 end

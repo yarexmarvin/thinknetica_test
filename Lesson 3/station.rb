@@ -1,5 +1,5 @@
-require_relative "./modules/instance_counter.rb"
-require_relative "./modules/validation.rb"
+require_relative './modules/instance_counter'
+require_relative './modules/validation'
 
 class Station
   include InstanceCounter
@@ -16,21 +16,19 @@ class Station
     @name = name
     @trains = []
     @@stations << self
-    validate("station", "name", name)
+    validate('station', 'name', name)
     register_instance
   end
 
   def valid?
-    begin
-      validate("station", "name", name)
-      true
-    rescue
-      false
-    end
+    validate('station', 'name', name)
+    true
+  rescue StandardError
+    false
   end
 
-  def iterate_through_trains
-    @trains.each { |train| yield(train) }
+  def iterate_through_trains(&block)
+    @trains.each(&block)
   end
 
   def add_train(train)
@@ -38,14 +36,13 @@ class Station
   end
 
   def get_trains_by_type
-    @trains.reduce({}) do |acc, train|
+    @trains.each_with_object({}) do |train, acc|
       acc[train.type] = acc[train.type].nil? ? 1 : acc[train.type] + 1
-      acc
     end
   end
 
   def depart_train(train)
-    if (@trains.include?(train))
+    if @trains.include?(train)
       @trains.delete(train)
       @trains.compact!
     end

@@ -1,4 +1,3 @@
-
 months_and_days = {
   1 => 31,
   2 => 28,
@@ -23,26 +22,20 @@ month = gets.chomp.to_i
 puts 'Enter a full year:'
 year = gets.chomp.to_i
 
-
-result = 0;
+result = 0
 
 (1...month).each do |month|
   result += months_and_days[month]
 end
 
-result += day;
+result += day
 
 if year % 4 == 0 && year % 100 != 0
-  result+=1
+  result += 1
 
 elsif year % 4 == 0 && year % 100 == 0
-  if year % 400 == 0
-    result +=1
-  end
+  result += 1 if year % 400 == 0
 
 end
 
-
 puts "It is the #{result} day of #{year} year!"
-
-

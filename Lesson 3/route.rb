@@ -1,5 +1,5 @@
-require_relative "./modules/instance_counter.rb"
-require_relative "./modules/validation.rb"
+require_relative './modules/instance_counter'
+require_relative './modules/validation'
 
 class Route
   include InstanceCounter
@@ -12,17 +12,15 @@ class Route
     @start = start_station
     @end = end_station
     @stations = stations_in_between
-    validate("route", "name", name)
+    validate('route', 'name', name)
     register_instance
   end
 
   def valid?
-    begin
-      validate("route", "name", name)
-      true
-    rescue
-      false
-    end
+    validate('route', 'name', name)
+    true
+  rescue StandardError
+    false
   end
 
   def add_station(station_name)
@@ -38,6 +36,6 @@ class Route
     result = @stations.collect { |station| station }
     result.unshift(@start)
     result.push(@end)
-    return result
+    result
   end
 end

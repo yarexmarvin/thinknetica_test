@@ -1,6 +1,6 @@
-require_relative "../station.rb"
-require_relative "../modules/options.rb"
-require_relative "../modules/validation.rb"
+require_relative '../station'
+require_relative '../modules/options'
+require_relative '../modules/validation'
 
 class StationController
   include Options
@@ -15,17 +15,17 @@ class StationController
 
   def station_controller
     loop do
-      show_options("Choose an action:", ["Get a list of stations", "Create a station", "Amount of stations"])
+      show_options('Choose an action:', ['Get a list of stations', 'Create a station', 'Amount of stations'])
 
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
-      when "1"
+      when '1'
         station_list_action
-      when "2"
+      when '2'
         create_station_action
-      when "3"
+      when '3'
         Station.instances
       else
         print_wrong_option
@@ -35,21 +35,21 @@ class StationController
 
   def station_list_action
     if Station.all.size.zero?
-      show_no_subject("stations")
+      show_no_subject('stations')
       return
     end
 
     loop do
-      puts "==================="
-      puts "Stations available:"
+      puts '==================='
+      puts 'Stations available:'
       Station.all.each_with_index { |station, index| puts "Station #{index + 1}: #{station.name}" }
-      puts "==================="
+      puts '==================='
       puts "Enter a number of a station, if you want to explore more (or type 'back' to move back): "
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
       user_answer = user_answer.to_i
-      if (!user_answer.positive? || user_answer > @stations.size)
+      if !user_answer.positive? || user_answer > @stations.size
         print_wrong_option
         next
       end
@@ -60,27 +60,27 @@ class StationController
   end
 
   def create_station_action
-      puts "==============================="
-      puts "Enter the name of a new station"
-      puts "==============================="
-      name = ask_user
-      return if EXIT_PROGRAM.include?(name)
+    puts '==============================='
+    puts 'Enter the name of a new station'
+    puts '==============================='
+    name = ask_user
+    return if EXIT_PROGRAM.include?(name)
 
-      @stations << Station.new(name)
-      puts "A new station has been created!"
+    @stations << Station.new(name)
+    puts 'A new station has been created!'
   end
 
   def station_action(station)
     loop do
-      show_options("Choose an action:", ["Get the list of trains", "Get the list of traings by type"])
+      show_options('Choose an action:', ['Get the list of trains', 'Get the list of traings by type'])
 
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
       case user_answer
-      when "1"
+      when '1'
         station_trains_list(station)
-      when "2"
+      when '2'
         station_trains_list_by_type(station)
       else
         print_wrong_option
@@ -89,22 +89,24 @@ class StationController
   end
 
   def station_trains_list(station)
-    if (station.trains.size.zero?)
-      show_no_subject("trains on this station")
+    if station.trains.size.zero?
+      show_no_subject('trains on this station')
     else
-      puts "=========================="
-      station.iterate_through_trains { |train| puts "Train: #{train.number}, type: #{train.type}, carriages: #{train.carriages.size}" }
-      puts "=========================="
+      puts '=========================='
+      station.iterate_through_trains do |train|
+        puts "Train: #{train.number}, type: #{train.type}, carriages: #{train.carriages.size}"
+      end
+      puts '=========================='
     end
   end
 
   def station_trains_list_by_type(station)
-    if (station.get_trains_by_type.empty?)
-      show_no_subject("trains on this station")
+    if station.get_trains_by_type.empty?
+      show_no_subject('trains on this station')
     else
-      puts "=========================="
+      puts '=========================='
       puts station.get_trains_by_type.inspect
-      puts "=========================="
+      puts '=========================='
     end
   end
 end
