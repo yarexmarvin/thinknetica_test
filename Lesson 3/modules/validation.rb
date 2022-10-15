@@ -1,8 +1,8 @@
 module Validation
-  ROUTE_NAME = /^\w+(\d+|\w+)$/i
-  CARRIAGE_NAME = /^\w+(\d+|\w+)$/i
-  STATION_NAME = /^\w{2,}(\d+|\w+)$/i
-  TRAIN_NUMBER = /^(\d|[a-z]){3}-?(\d|[a-z]){2}$/i
+  ROUTE_NAME = /^\w+(\d+|\w+)$/i.freeze
+  CARRIAGE_NAME = /^\w+(\d+|\w+)$/i.freeze
+  STATION_NAME = /^\w{2,}(\d+|\w+)$/i.freeze
+  TRAIN_NUMBER = /^(\d|[a-z]){3}-?(\d|[a-z]){2}$/i.freeze
 
   def validate(item, attr, value)
     case item

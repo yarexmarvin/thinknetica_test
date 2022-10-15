@@ -63,20 +63,20 @@ class Train
   def to_next_station
     next_index = @route.index(@station) + 1
 
-    unless next_index == @route.size
-      @station.depart_train(self)
-      @station = @route[next_index]
-      @station.add_train(self)
-    end
+    return if next_index == @route.size
+
+    @station.depart_train(self)
+    @station = @route[next_index]
+    @station.add_train(self)
   end
 
   def to_previous_station
     previous_index = @route.index(@station) - 1
 
-    unless previous_index == -1
-      @station.depart_train(self)
-      @station = @route[previous_index]
-      @station.add_train(self)
-    end
+    return if previous_index == -1
+
+    @station.depart_train(self)
+    @station = @route[previous_index]
+    @station.add_train(self)
   end
 end

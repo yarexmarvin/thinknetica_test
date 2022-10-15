@@ -190,7 +190,7 @@ class CarriageController
       user_answer = ask_user
       break if EXIT_PROGRAM.include?(user_answer)
 
-      if user_answer.to_i < 0
+      if user_answer.to_i.negative? || user_answer.to_i > carriage.volume - carriage.filled_volume
         print_wrong_option
         next
       end

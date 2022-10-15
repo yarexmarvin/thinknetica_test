@@ -42,9 +42,9 @@ class Station
   end
 
   def depart_train(train)
-    if @trains.include?(train)
-      @trains.delete(train)
-      @trains.compact!
-    end
+    return unless @trains.include?(train)
+
+    @trains.delete(train)
+    @trains.compact!
   end
 end
