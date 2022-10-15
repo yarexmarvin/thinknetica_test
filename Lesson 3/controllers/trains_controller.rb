@@ -239,7 +239,7 @@ class TrainController
       when '2'
         remove_carriage_from_train(train)
       when '3'
-        set_route_to_train(train)
+        add_route_to_train(train)
       when '4'
         puts 'Enter a speed:'
         speed = ask_user.to_i
@@ -249,7 +249,7 @@ class TrainController
       when '6'
         add_train_manufacturer(train)
       when '7'
-        train.get_manufacturer
+        train.manufacturer
       else
         print_wrong_option
       end
@@ -261,7 +261,7 @@ class TrainController
     puts 'Enter the name of a manufacturer:'
     puts '==================================='
     manufacturer = ask_user
-    train.set_manufacturer(manufacturer)
+    train.add_manufacturer(manufacturer)
     puts '============================================================================='
     puts "Manufacturer: #{manufacturer} for the train #{train.number} has been updated!"
     puts '============================================================================='
@@ -314,21 +314,18 @@ class TrainController
   def remove_carriage_from_train(train)
     if train.carriages.size.zero?
       show_no_subject('carriages')
-      nil
     else
       prev_train_amount = train.carriages.size
-
       train.remove_carriage
       if train.carriages.size < prev_train_amount
         puts '#############################'
         puts 'The carriage has been deleted'
         puts '#############################'
       end
-      nil
     end
   end
 
-  def set_route_to_train(train)
+  def add_route_to_train(train)
     if @routes.size.zero?
       show_no_subject('routes')
       return

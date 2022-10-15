@@ -1,9 +1,9 @@
 module Manufacture
-  def set_manufacturer(manufacturer)
+  def add_manufacturer(manufacturer)
     @manufacturer = manufacturer
   end
 
-  def get_manufacturer
+  def manufacturer
     if @manufacturer
       puts '============================='
       puts "Manufacturer: #{@manufacturer}"

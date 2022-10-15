@@ -32,7 +32,7 @@ class Route
     @stations.slice!(index)
   end
 
-  def get_route
+  def full_route
     result = @stations.collect { |station| station }
     result.unshift(@start)
     result.push(@end)

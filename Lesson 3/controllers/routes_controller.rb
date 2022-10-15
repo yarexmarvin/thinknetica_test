@@ -58,7 +58,7 @@ class RouteController
 
       puts '=========================='
       puts 'Choose end point'
-      end_stations = @stations.select { |station| station != start_station }
+      end_stations = @stations.reject { |station| station == start_station }
       end_stations.each_with_index { |station, index| puts "#{index + 1} - Station: #{station.name}" }
       puts '=========================='
       end_station_number = ask_user
@@ -130,7 +130,7 @@ class RouteController
 
       case user_answer
       when '1'
-        puts route.get_route.inspect
+        puts route.full_route.inspect
       when '2'
         add_station_to_route(route)
       when '3'
@@ -146,7 +146,7 @@ class RouteController
       puts '===================================='
       puts 'Which station do you wish to delete?'
       puts '===================================='
-      current_stations = route.get_route
+      current_stations = route.full_route
 
       available_stations = current_stations.select do |station|
         current_stations[0] != station && current_stations[current_stations.size - 1] != station
@@ -193,8 +193,8 @@ class RouteController
       puts '======================'
       puts 'Choose from available:'
       puts '======================'
-      current_stations = route.get_route
-      available_stations = @stations.select { |station| !current_stations.include?(station) }
+      current_stations = route.full_route
+      available_stations = @stations.reject { |station| current_stations.include?(station) }
 
       if available_stations.size.zero?
         show_no_subject('avaliable stations to choose')

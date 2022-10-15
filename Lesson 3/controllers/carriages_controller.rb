@@ -144,7 +144,7 @@ class CarriageController
 
       case user_answer
       when '1'
-        carriage.get_manufacturer
+        carriage.manufacturer
       when '2'
         add_carriage_manufacturer(carriage)
       when '3'
@@ -169,7 +169,7 @@ class CarriageController
 
       case user_answer
       when '1'
-        carriage.get_manufacturer
+        carriage.manufacturer
       when '2'
         add_carriage_manufacturer(carriage)
       when '3'
@@ -205,7 +205,7 @@ class CarriageController
     puts 'Enter the name of a manufacturer:'
     puts '=================================='
     manufacturer = ask_user
-    carriage.set_manufacturer(manufacturer)
+    carriage.add_manufacturer(manufacturer)
     puts '===================================================================================='
     puts "Manufacturer - #{manufacturer} - has been updated for the carriage #{carriage.name}!"
     puts '===================================================================================='

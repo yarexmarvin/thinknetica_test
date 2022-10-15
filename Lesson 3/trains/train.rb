@@ -55,7 +55,7 @@ class Train
   end
 
   def add_route(route)
-    @route = route.get_route
+    @route = route.full_route
     @station = @route[0]
     @station.add_train(self)
   end
