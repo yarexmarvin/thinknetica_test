@@ -1,11 +1,18 @@
-require_relative '../modules/manufacture'
-require_relative '../modules/instance_counter'
-require_relative '../modules/validation'
+require_relative "../modules/manufacture"
+require_relative "../modules/instance_counter"
+require_relative "../modules/validation"
+require_relative "../modules/accessor"
+
 
 class Train
   include Manufacture
   include InstanceCounter
   include Validation
+  include Accessor
+
+  TRAIN_NUMBER = /^(\d|[a-z]){3}-?(\d|[a-z]){2}$/i.freeze
+
+
   @@trains = []
 
   def self.find(number)
@@ -17,6 +24,12 @@ class Train
   attr_accessor :speed
   attr_reader :station, :number, :type, :route, :carriages
 
+  validate :number, :format, TRAIN_NUMBER
+  validate :type, :presence
+  validate :type, :type, String
+  validate :speed, :positive
+  validate :speed, :type, Integer
+
   def initialize(number, type, carriages = [])
     @number = number
     @type = type
@@ -25,17 +38,10 @@ class Train
     @station = {}
     @route = []
 
-    validate('train', 'number', number)
+    validate!
 
     @@trains << self
     register_instance
-  end
-
-  def valid?
-    validate('train', 'number', number)
-    true
-  rescue StandardError
-    false
   end
 
   def iterate_through_carriages(&block)

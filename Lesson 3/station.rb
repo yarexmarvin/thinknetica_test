@@ -1,9 +1,14 @@
-require_relative './modules/instance_counter'
-require_relative './modules/validation'
+require_relative "./modules/instance_counter"
+require_relative "./modules/validation"
+require_relative "./modules/accessor"
 
 class Station
   include InstanceCounter
   include Validation
+  include Accessor
+
+  STATION_NAME = /^\w{2,}(\d+|\w+)$/i.freeze
+
 
   @@stations = []
   def self.all
@@ -12,19 +17,14 @@ class Station
 
   attr_reader :name, :trains
 
+  validate :name, :format, STATION_NAME
+
   def initialize(name)
     @name = name
     @trains = []
     @@stations << self
-    validate('station', 'name', name)
+    validate!
     register_instance
-  end
-
-  def valid?
-    validate('station', 'name', name)
-    true
-  rescue StandardError
-    false
   end
 
   def iterate_through_trains(&block)

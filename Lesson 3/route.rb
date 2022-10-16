@@ -1,9 +1,18 @@
+require_relative './station'
 require_relative './modules/instance_counter'
+require_relative "./modules/accessor"
 require_relative './modules/validation'
 
 class Route
   include InstanceCounter
   include Validation
+  include Accessor
+
+  ROUTE_NAME = /^\w+(\d+|\w+)$/i.freeze
+
+  validate :name, :format, ROUTE_NAME
+  validate :start, :type, Station
+  validate :end, :type, Station
 
   attr_reader :name
 
@@ -12,15 +21,8 @@ class Route
     @start = start_station
     @end = end_station
     @stations = stations_in_between
-    validate('route', 'name', name)
+    validate!
     register_instance
-  end
-
-  def valid?
-    validate('route', 'name', name)
-    true
-  rescue StandardError
-    false
   end
 
   def add_station(station_name)

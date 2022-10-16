@@ -1,59 +1,56 @@
 module Validation
-  ROUTE_NAME = /^\w+(\d+|\w+)$/i.freeze
-  CARRIAGE_NAME = /^\w+(\d+|\w+)$/i.freeze
-  STATION_NAME = /^\w{2,}(\d+|\w+)$/i.freeze
-  TRAIN_NUMBER = /^(\d|[a-z]){3}-?(\d|[a-z]){2}$/i.freeze
+  def self.included(base)
+    base.extend ClassMethods
+    base.include InstanceMethods
+  end
 
-  def validate(item, attr, value)
-    case item
-    when 'train'
-      train_validation(attr, value)
-    when 'route'
-      route_validation(attr, value)
-    when 'station'
-      station_validation(attr, value)
-    when 'carriage'
-      carriage_validation(attr, value)
-    else
-      puts 'Undefined instance'
+  module ClassMethods
+    def validate(name, type, param = false)
+      @validate ||= []
+      @validate << { name: name, type: type, param: param }
     end
   end
 
-  private
-
-  def train_validation(attr, value)
-    case attr
-    when 'number'
-      raise 'Invalid number for the train' unless value =~ TRAIN_NUMBER
-    else
-      puts 'Invalid attribute of a train instance'
+  module InstanceMethods
+    def valid?
+      begin
+        validate!
+        true
+      rescue => exception
+        puts exception
+        false
+      end
     end
-  end
 
-  def route_validation(attr, value)
-    case attr
-    when 'name'
-      raise 'Invalid name for the route' unless value =~ ROUTE_NAME
-    else
-      puts 'Invalid attribute of a route instance'
+    def validate!
+      self.class.instance_variable_get(:@validate).each do |validation|
+         
+        name = validation[:name]
+        type = validation[:type]
+        param = validation[:param]
+        value = instance_variable_get("@#{name}")
+        send("validate_#{type}", name, value, param)
+      end
     end
-  end
 
-  def station_validation(attr, value)
-    case attr
-    when 'name'
-      raise 'Invalid name for the station' unless value =~ STATION_NAME
-    else
-      puts 'Invalid attribute of a station instance'
+    def validate_presence(name, value, _)
+      raise "The #{name} should be present" if value.nil? || value.to_s.strip.empty?
     end
-  end
 
-  def carriage_validation(attr, value)
-    case attr
-    when 'name'
-      raise 'Invalid name for the carriage' unless value =~ CARRIAGE_NAME
-    else
-      puts 'Invalid attribute of a carriage instance'
+    def validate_length(name, value, param)
+      raise "The #{name}'s value should be at least #{param} length" if value.length < params
+    end
+
+    def validate_format(name, value, regex)
+      raise "Wrong format of #{name}'s value" if value !~ regex
+    end
+
+    def validate_type(name, value, type)
+      raise "Wrong type of #{name}'s value" unless value.is_a?(type)
+    end
+
+    def validate_positive(name, value, _)
+      raise "The #{name}'s value should be more then 0" if value.negative?
     end
   end
 end
